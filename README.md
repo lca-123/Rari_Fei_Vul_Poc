@@ -89,11 +89,6 @@ https://etherscan.io/address/0x28192abdb1d6079767ab3730051c7f9ded06fe46#code
 git clone https://github.com/W2Ning/Rari_Fei_Vul_Poc.git && cd Rari_Fei_Vul_Poc
 ```
 
-
-```
-forge test -vvv --fork-url https://eth-mainnet.g.alchemy.com/v2/PfcfXmDSvG9qCl6ByGeWIn9AEACL1lCE --fork-block-number 14684813
-```
-
 ```
 forge test -vvv 
 --fork-url https://eth-mainnet.g.alchemy.com/v2/MY-API 
